@@ -6,8 +6,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 48%;
+        height: 80%;
         border: none;
         padding: 20px;
         box-sizing: border-box;
@@ -15,7 +15,17 @@
         font-family: Arial, sans-serif;
         resize: none;
         outline: none;
-        background-color: transparent;
+        background-color: white;
+      }
+
+      #preview-iframe {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        width: 48%;
+        height: 80%;
+        border: none;
+        border-left: 1px solid gray;
       }
 
       #save-button {
@@ -35,20 +45,51 @@
       #save-button:hover {
         background-color: #3e8e41;
       }
+
+      #clear-button {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #F44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #clear-button:hover {
+        background-color: #E53935;
+      }
     </style>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var textBox = document.getElementById('my-text-box');
         var saveButton = document.getElementById('save-button');
+        var clearButton = document.getElementById('clear-button');
+        var previewFrame = document.getElementById('preview-iframe');
 
         textBox.addEventListener('input', function() {
           saveButton.disabled = false;
+          updatePreview();
         });
 
         saveButton.addEventListener('click', function() {
           var blob = new Blob([textBox.value], {type: 'text/html'});
           saveAs(blob, 'index.html');
         });
+
+        clearButton.addEventListener('click', function() {
+          textBox.value = '';
+          previewFrame.srcdoc = '';
+          saveButton.disabled = true;
+        });
+
+        function updatePreview() {
+          previewFrame.srcdoc = textBox.value;
+        }
       });
 
       function saveAs(blob, fileName) {
@@ -61,6 +102,8 @@
   </head>
   <body>
     <textarea id="my-text-box"></textarea>
-    <button id="save-button" disabled>Save text has index.html</button>
+    <iframe id="preview-iframe"></iframe>
+    <button id="save-button" disabled>Save text as index.html</button>
+    <button id="clear-button">Clear</button>
   </body>
 </html>
